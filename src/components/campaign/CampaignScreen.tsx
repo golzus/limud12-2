@@ -166,7 +166,7 @@ interface Toast { joiner: Joiner; leaving: boolean }
 
 function JoinToasts({ toasts, names }: { toasts: Toast[]; names: Record<string, string> }) {
   return (
-    <div className="pointer-events-none absolute left-[48px] top-[360px] z-30 flex w-[330px] flex-col gap-3">
+    <div className="pointer-events-none absolute left-[48px] top-[600px] flex-col-reverse z-30 flex w-[330px] gap-3">
       {toasts.map(({ joiner: j, leaving }) => (
         <div
           key={j.id}
