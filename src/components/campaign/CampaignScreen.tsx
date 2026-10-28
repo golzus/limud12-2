@@ -218,9 +218,9 @@ export function CampaignScreen({ source }: { source: CampaignSource }) {
             <div className="flex flex-1 flex-col">
               <div className="mb-3 text-[21px] text-cmp-cream">שלושה מסלולים. חיים של תורה.</div>
               <div className="flex gap-5">
-                <GroupCard group={GROUPS[0]} accent="bg-cmp-lemon" />
-                <GroupCard group={GROUPS[1]} accent="bg-cmp-cream" />
-                <GroupCard group={GROUPS[2]} accent="bg-cmp-gold" />
+                <GroupCard group={GROUPS[0]!} accent="bg-cmp-lemon" />
+                <GroupCard group={GROUPS[1]!} accent="bg-cmp-cream" />
+                <GroupCard group={GROUPS[2]!} accent="bg-cmp-gold" />
               </div>
             </div>
             <div className="flex w-[330px] shrink-0 flex-col items-end pt-2 text-left" dir="rtl">

@@ -10,7 +10,7 @@ const FIRST = ["יעקב", "משה", "אברהם", "דוד", "שלום", "יוס
 const LAST = ["פרידמן", "לוי", "רוזן", "כהן", "ישראלי", "גולדברג", "וייס", "שטרן", "קליין", "ברגר", "הורוביץ"];
 const GROUP_IDS: GroupId[] = ["connected", "linked", "eternal"];
 
-const pick = <T,>(a: T[]) => a[Math.floor(Math.random() * a.length)];
+const pick = <T,>(a: T[]): T => a[Math.floor(Math.random() * a.length)]!;
 let seq = 0;
 const makeJoiner = (batei: BeitMidrash[]): Joiner => ({
   id: `mock-${Date.now()}-${seq++}`,
