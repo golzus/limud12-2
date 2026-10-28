@@ -29,15 +29,19 @@ const groupName = (g: GroupId) => GROUPS.find((x) => x.id === g)!.name;
 
 /* ---------- helpers ---------- */
 
+/** Scales the design to fit, then stretches the canvas so it fills the whole screen (no empty margins). */
 function useScale(w: number, h: number) {
-  const [scale, setScale] = useState(1);
+  const [fit, setFit] = useState({ scale: 1, w, h });
   useEffect(() => {
-    const fit = () => setScale(Math.min(window.innerWidth / w, window.innerHeight / h));
-    fit();
-    window.addEventListener("resize", fit);
-    return () => window.removeEventListener("resize", fit);
+    const update = () => {
+      const s = Math.min(window.innerWidth / w, window.innerHeight / h);
+      setFit({ scale: s, w: window.innerWidth / s, h: window.innerHeight / s });
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
   }, [w, h]);
-  return scale;
+  return fit;
 }
 
 function useCountUp(value: number, ms = 900) {
@@ -105,7 +109,7 @@ function Column({ b }: { b: BeitMidrash }) {
         {pct}
         <span className="text-[18px] font-medium text-cmp-cream/80">%</span>
       </div>
-      <div className="mt-3 flex h-[245px] w-[76px] flex-col justify-end overflow-hidden rounded-t-md bg-cmp-track">
+      <div className="mt-3 flex min-h-[245px] w-[76px] flex-1 flex-col justify-end overflow-hidden rounded-t-md bg-cmp-track">
         <div key={flash} className={`cmp-bar-anim flex flex-col ${flash ? "cmp-pop" : ""}`} style={{ height: `${Math.min(100, pct)}%` }}>
           {order.map((g) => (
             <div
@@ -186,7 +190,7 @@ function JoinToasts({ toasts, names }: { toasts: Toast[]; names: Record<string, 
 /* ---------- screen ---------- */
 
 export function CampaignScreen({ source }: { source: CampaignSource }) {
-  const scale = useScale(1920, 1080);
+  const { scale, w, h } = useScale(1920, 1080);
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   const onJoin = useCallback((joiner: Joiner) => {
@@ -204,13 +208,13 @@ export function CampaignScreen({ source }: { source: CampaignSource }) {
     <div className="fixed inset-0 overflow-hidden bg-cmp-deep-2 font-cmp">
       <div
         dir="rtl"
-        className="absolute left-1/2 top-1/2 h-[1080px] w-[1920px] overflow-hidden bg-cmp-deep bg-cover bg-center"
-        style={{ transform: `translate(-50%, -50%) scale(${scale})`, backgroundImage: `url(${bg.url})` }}
+        className="absolute left-0 top-0 origin-top-left overflow-hidden bg-cmp-deep bg-cover bg-center"
+        style={{ width: w, height: h, transform: `scale(${scale})`, backgroundImage: `url(${bg.url})` }}
       >
         <div className="absolute inset-0 bg-cmp-deep/70" />
-        <div className="relative h-full px-[48px] pt-[28px]">
+        <div className="relative flex h-full flex-col px-[48px] pb-[20px] pt-[28px]">
           {/* Header */}
-          <div className="flex h-[280px] items-start gap-5">
+          <div className="flex h-[280px] shrink-0 items-start gap-5">
             <div className="flex w-[350px] shrink-0 flex-col items-center">
               <img src={logo.url} alt="שבת חיינו" className="h-[240px] w-auto object-contain" />
               <div className="mt-1 text-[18px] text-cmp-cream">100% אנ״ש אשדוד למען חיינו</div>
@@ -237,8 +241,8 @@ export function CampaignScreen({ source }: { source: CampaignSource }) {
           <div className="mt-[14px] border-t border-cmp-line" />
 
           {/* Middle */}
-          <div className="mt-[30px] flex h-[574px] gap-[34px]">
-            <div className="flex flex-1 flex-col rounded-3xl border border-cmp-line bg-cmp-panel px-8 pt-5">
+          <div className="mt-[30px] flex min-h-[574px] flex-1 gap-[34px]">
+            <div className="flex flex-1 flex-col rounded-3xl border border-cmp-line bg-cmp-panel px-8 pb-4 pt-5">
               <div className="flex items-start justify-between border-b border-cmp-line pb-4">
                 <div>
                   <div className="text-[28px] font-bold text-cmp-cream">בתי המדרש מתחברים לחיינו</div>
