@@ -110,7 +110,7 @@ function Column({ b }: { b: BeitMidrash }) {
         <span className="text-[18px] font-medium text-cmp-cream/80">%</span>
       </div>
       <div className="mt-3 flex min-h-[245px] w-[76px] flex-1 flex-col justify-end overflow-hidden rounded-t-md bg-cmp-track">
-        <div key={flash} className={`cmp-bar-anim flex flex-col ${flash ? "cmp-pop" : ""}`} style={{ height: `${Math.min(100, pct)}%` }}>
+        <div key={flash} className={`cmp-bar-anim cmp-breathe flex flex-col ${flash ? "cmp-pop" : ""}`} style={{ height: `${Math.min(100, pct)}%`, animationDelay: `${(b.id.length + Number(b.id.replace(/\D/g, ""))) * -0.5}s` }}>
           {order.map((g) => (
             <div
               key={g}
