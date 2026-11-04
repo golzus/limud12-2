@@ -82,7 +82,7 @@ function GroupCard({ group, accent }: { group: (typeof GROUPS)[number]; accent: 
     <div className="relative flex min-h-[216px] flex-1 flex-col rounded-2xl border border-cmp-line bg-cmp-panel px-7 pt-5">
       <div className="text-[17px] text-cmp-cream/70">קבוצת</div>
       <div className="mt-1 flex items-center justify-between">
-        <div className="text-[44px] font-extrabold leading-none text-cmp-lemon">{group.name}</div>
+        <div className={`text-[44px] font-extrabold leading-none ${GROUP_TEXT[group.id]}`}>{group.name}</div>
         <BookIcon className="h-[42px] w-[96px] text-cmp-cream" />
       </div>
       <div className="mt-5 text-[19px] leading-snug text-cmp-cream">{group.description}</div>
