@@ -36,7 +36,10 @@ export interface CampaignState {
   joiners: Joiner[]; // newest first
 }
 
-export type CampaignEvent = { type: "join"; joiner: Joiner };
+export type CampaignEvent =
+  | { type: "join"; joiner: Joiner }
+  /** Full resync — replaces everything (used after reconnect / polling / edits & deletions). */
+  | { type: "snapshot"; state: CampaignState };
 
 /** Any data provider (mock, Lovable Cloud realtime, polling...) implements this. */
 export interface CampaignSource {
@@ -48,6 +51,7 @@ export const joinedOf = (b: BeitMidrash) => b.counts.connected + b.counts.linked
 export const percentOf = (b: BeitMidrash) => (b.total ? Math.round((joinedOf(b) / b.total) * 100) : 0);
 
 export function applyEvent(state: CampaignState, event: CampaignEvent): CampaignState {
+  if (event.type === "snapshot") return event.state;
   if (event.type !== "join") return state;
   const { joiner } = event;
   if (state.joiners.some((j) => j.id === joiner.id)) return state;
