@@ -79,7 +79,7 @@ function BookIcon({ className = "" }: { className?: string }) {
 
 function GroupCard({ group, accent }: { group: (typeof GROUPS)[number]; accent: string }) {
   return (
-    <div className="relative flex h-[216px] flex-1 flex-col rounded-2xl border border-cmp-line bg-cmp-panel px-7 pt-5">
+    <div className="relative flex min-h-[216px] flex-1 flex-col rounded-2xl border border-cmp-line bg-cmp-panel px-7 pt-5">
       <div className="text-[17px] text-cmp-cream/70">קבוצת</div>
       <div className="mt-1 flex items-center justify-between">
         <div className="text-[44px] font-extrabold leading-none text-cmp-lemon">{group.name}</div>
@@ -220,18 +220,14 @@ export function CampaignScreen({ source }: { source: CampaignSource }) {
               <div className="mt-1 text-[18px] text-cmp-cream">100% אנ״ש אשדוד למען חיינו</div>
             </div>
             <div className="flex flex-1 flex-col">
-              <div className="mb-3 text-[21px] text-cmp-cream">שלושה מסלולים. חיים של תורה.</div>
-              <div className="flex gap-5">
+              <div className="flex flex-1 gap-5">
                 <GroupCard group={GROUPS[0]!} accent="bg-cmp-lemon" />
                 <GroupCard group={GROUPS[1]!} accent="bg-cmp-cream" />
                 <GroupCard group={GROUPS[2]!} accent="bg-cmp-gold" />
               </div>
             </div>
             <div className="flex w-[330px] shrink-0 flex-col items-end pt-2 text-left" dir="rtl">
-              <div className="flex items-center gap-2 text-[17px] text-cmp-cream/80">
-                <span className="h-2 w-2 rounded-full bg-cmp-lemon" /> קמפיין חיינו · אשדוד
-              </div>
-              <div className="mt-6 text-[110px] font-extrabold leading-none tracking-tight text-cmp-lemon" dir="ltr">
+              <div className="mt-3 text-[110px] font-extrabold leading-none tracking-tight text-cmp-lemon" dir="ltr">
                 {shownTotal.toLocaleString("en-US")}
               </div>
               <div className="mt-4 text-[26px] text-cmp-cream">אברכים כבר הצטרפו</div>
@@ -243,20 +239,14 @@ export function CampaignScreen({ source }: { source: CampaignSource }) {
           {/* Middle */}
           <div className="mt-[30px] flex min-h-[574px] flex-1 gap-[34px]">
             <div className="flex flex-1 flex-col rounded-3xl border border-cmp-line bg-cmp-panel px-8 pb-4 pt-5">
-              <div className="flex items-start justify-between border-b border-cmp-line pb-4">
-                <div>
-                  <div className="text-[28px] font-bold text-cmp-cream">בתי המדרש מתחברים לחיינו</div>
-                  <div className="text-[16px] text-cmp-cream/70">12 בתי מדרש · ההתקדמות ליעד ההצטרפות</div>
-                </div>
-                <div className="flex gap-6 pt-2 text-[16px] text-cmp-cream">
-                  {GROUPS.map((g) => (
-                    <span key={g.id} className="flex items-center gap-2">
-                      <span className={`h-[10px] w-[10px] rounded-sm ${GROUP_BG[g.id]}`} /> {g.name}
-                    </span>
-                  ))}
-                </div>
+              <div className="flex items-center justify-center gap-7 border-b border-cmp-line pb-3 text-[16px] text-cmp-cream">
+                {GROUPS.map((g) => (
+                  <span key={g.id} className="flex items-center gap-2">
+                    <span className={`h-[10px] w-[10px] rounded-sm ${GROUP_BG[g.id]}`} /> {g.name}
+                  </span>
+                ))}
               </div>
-              <div className="flex flex-1 pt-5">
+              <div className="flex flex-1 pt-4">
                 {state?.batei.map((b) => <Column key={b.id} b={b} />)}
               </div>
             </div>
@@ -286,8 +276,11 @@ export function CampaignScreen({ source }: { source: CampaignSource }) {
             <JoinersTicker joiners={state?.joiners ?? []} names={names} />
           </div>
 
-          <div className="mt-3 flex justify-between text-[13px] tracking-widest text-cmp-cream/50">
+          <div className="mt-3 flex items-center justify-between gap-6 text-[13px] tracking-widest text-cmp-cream/50">
             <span>הדמיה בלבד · השמות והנתונים להמחשה</span>
+            <span className="text-[14px] tracking-normal text-cmp-cream/80">
+              להזמנות תוכנות נוספות — ג.ז. <span className="font-bold text-cmp-gold" dir="ltr">0504-199-417</span>
+            </span>
             <span dir="ltr">CHAYENU / LIVE</span>
           </div>
         </div>
