@@ -22,7 +22,7 @@ function Index() {
   // Swap for a live (Cloud realtime) source later — the screen stays the same.
   // Set VITE_CAMPAIGN_API (e.g. https://your-system/api/campaign) to use real data.
   const [source] = useState(() => {
-    const api = import.meta.env.VITE_CAMPAIGN_API as string | undefined;
+    const api = import.meta.env["VITE_CAMPAIGN_API"] as string | undefined;
     return api ? createHttpSource(api) : createMockSource();
   });
   return <CampaignScreen source={source} />;
