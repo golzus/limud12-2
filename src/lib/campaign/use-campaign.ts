@@ -16,14 +16,19 @@ export function useCampaign(source: CampaignSource, onJoin?: (j: Joiner) => void
     let loaded = false;
     const unsub = source.subscribe((e) => {
       if (!loaded) return void pending.push(e);
-      setState((s) => (s ? applyEvent(s, e) : s));
+      setState((s) => (s || e.type === "snapshot" ? applyEvent(s as never, e) : s));
       if (e.type === "join") onJoinRef.current?.(e.joiner);
     });
-    source.load().then((initial) => {
-      if (!alive) return;
-      loaded = true;
-      setState(pending.reduce(applyEvent, initial));
-    });
+    const tryLoad = (delay = 2000) =>
+      source
+        .load()
+        .then((initial) => {
+          if (!alive) return;
+          loaded = true;
+          setState(pending.reduce(applyEvent, initial));
+        })
+        .catch(() => alive && setTimeout(() => tryLoad(Math.min(delay * 2, 30000)), delay)); // retry, screen never stays blank
+    tryLoad();
     return () => {
       alive = false;
       unsub();
