@@ -92,7 +92,7 @@ function GroupCard({ group, accent }: { group: (typeof GROUPS)[number]; accent: 
   );
 }
 
-function Column({ b, cycle }: { b: BeitMidrash; cycle: number }) {
+function Column({ b, cycle, i }: { b: BeitMidrash; cycle: number; i: number }) {
   const joined = joinedOf(b);
   const pct = percentOf(b);
   const order: GroupId[] = ["eternal", "linked", "connected"]; // top → bottom
@@ -125,7 +125,7 @@ function Column({ b, cycle }: { b: BeitMidrash; cycle: number }) {
         <span className="text-[18px] font-medium text-cmp-cream/80">%</span>
       </div>
       <div className="mt-3 flex min-h-[245px] w-[76px] flex-1 flex-col justify-end overflow-hidden rounded-t-md bg-cmp-track">
-        <div key={flash} className={`cmp-bar-anim cmp-bar-grow cmp-breathe flex flex-col ${noAnim ? "cmp-no-anim" : ""} ${flash ? "cmp-pop" : ""}`} style={{ height: `${grown ? Math.min(100, pct) : 0}%`, animationDelay: `${(b.id.length + Number(b.id.replace(/\D/g, ""))) * -0.5}s` }}>
+        <div key={flash} className={`cmp-bar-anim cmp-bar-grow cmp-breathe flex flex-col ${noAnim ? "cmp-no-anim" : ""} ${flash ? "cmp-pop" : ""}`} style={{ height: `${grown ? Math.min(100, pct) : 0}%`, transitionDelay: noAnim ? "0s" : `${i * 90}ms`, animationDelay: `${(b.id.length + Number(b.id.replace(/\D/g, ""))) * -0.5}s` }}>
           {order.map((g) => (
             <div
               key={g}
@@ -267,7 +267,7 @@ export function CampaignScreen({ source }: { source: CampaignSource }) {
                 ))}
               </div>
               <div className="flex flex-1 pt-4">
-                {state?.batei.map((b) => <Column key={b.id} b={b} cycle={cycle} />)}
+                {state?.batei.map((b, i) => <Column key={b.id} b={b} cycle={cycle} i={i} />)}
               </div>
             </div>
 
