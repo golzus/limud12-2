@@ -179,5 +179,6 @@
 @utility cmp-pop { animation: cmp-pop .9s ease-out; }
 @utility cmp-bar-anim { transition: height 1s cubic-bezier(.2,.8,.2,1); }
 @utility cmp-bar-grow { transition: height 2.6s cubic-bezier(.25,.8,.25,1); }
+@utility cmp-no-anim { transition: none; }
 @keyframes cmp-breathe { 0%,100% { transform: scaleY(1); } 50% { transform: scaleY(.97); } }
 @utility cmp-breathe { transform-origin: bottom; animation: cmp-breathe 6s ease-in-out infinite; }

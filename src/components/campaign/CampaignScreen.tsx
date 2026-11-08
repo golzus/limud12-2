@@ -103,11 +103,18 @@ function Column({ b, cycle }: { b: BeitMidrash; cycle: number }) {
     prev.current = joined;
   }, [joined]);
 
-  // Every cycle: drop the bar to zero, then let it rise slowly back up.
+  // Every cycle: drop the bar to zero instantly (no transition), then let it rise slowly back up.
   const [grown, setGrown] = useState(false);
+  const [noAnim, setNoAnim] = useState(false);
   useEffect(() => {
+    setNoAnim(true);
     setGrown(false);
-    const raf = requestAnimationFrame(() => requestAnimationFrame(() => setGrown(true)));
+    const raf = requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        setNoAnim(false);
+        setGrown(true);
+      })
+    );
     return () => cancelAnimationFrame(raf);
   }, [cycle]);
 
@@ -118,7 +125,7 @@ function Column({ b, cycle }: { b: BeitMidrash; cycle: number }) {
         <span className="text-[18px] font-medium text-cmp-cream/80">%</span>
       </div>
       <div className="mt-3 flex min-h-[245px] w-[76px] flex-1 flex-col justify-end overflow-hidden rounded-t-md bg-cmp-track">
-        <div key={flash} className={`cmp-bar-anim cmp-bar-grow cmp-breathe flex flex-col ${flash ? "cmp-pop" : ""}`} style={{ height: `${grown ? Math.min(100, pct) : 0}%`, animationDelay: `${(b.id.length + Number(b.id.replace(/\D/g, ""))) * -0.5}s` }}>
+        <div key={flash} className={`cmp-bar-anim cmp-bar-grow cmp-breathe flex flex-col ${noAnim ? "cmp-no-anim" : ""} ${flash ? "cmp-pop" : ""}`} style={{ height: `${grown ? Math.min(100, pct) : 0}%`, animationDelay: `${(b.id.length + Number(b.id.replace(/\D/g, ""))) * -0.5}s` }}>
           {order.map((g) => (
             <div
               key={g}
