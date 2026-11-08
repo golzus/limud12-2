@@ -200,6 +200,11 @@ function JoinToasts({ toasts, names }: { toasts: Toast[]; names: Record<string, 
 export function CampaignScreen({ source }: { source: CampaignSource }) {
   const { scale, w, h } = useScale(1920, 1080);
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const [cycle, setCycle] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setCycle((c) => c + 1), 10_000);
+    return () => clearInterval(id);
+  }, []);
 
   const onJoin = useCallback((joiner: Joiner) => {
     setToasts((t) => [...t, { joiner, leaving: false }].slice(-3));
@@ -255,7 +260,7 @@ export function CampaignScreen({ source }: { source: CampaignSource }) {
                 ))}
               </div>
               <div className="flex flex-1 pt-4">
-                {state?.batei.map((b) => <Column key={b.id} b={b} />)}
+                {state?.batei.map((b) => <Column key={b.id} b={b} cycle={cycle} />)}
               </div>
             </div>
 
