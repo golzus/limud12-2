@@ -92,7 +92,7 @@ function GroupCard({ group, accent }: { group: (typeof GROUPS)[number]; accent: 
   );
 }
 
-function Column({ b }: { b: BeitMidrash }) {
+function Column({ b, cycle }: { b: BeitMidrash; cycle: number }) {
   const joined = joinedOf(b);
   const pct = percentOf(b);
   const order: GroupId[] = ["eternal", "linked", "connected"]; // top → bottom
@@ -103,6 +103,21 @@ function Column({ b }: { b: BeitMidrash }) {
     prev.current = joined;
   }, [joined]);
 
+  // Every cycle: drop the bar to zero instantly (no transition), then let it rise slowly back up.
+  const [grown, setGrown] = useState(false);
+  const [noAnim, setNoAnim] = useState(false);
+  useEffect(() => {
+    setNoAnim(true);
+    setGrown(false);
+    const raf = requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        setNoAnim(false);
+        setGrown(true);
+      })
+    );
+    return () => cancelAnimationFrame(raf);
+  }, [cycle]);
+
   return (
     <div className="flex flex-1 flex-col items-center border-l border-cmp-line/60 last:border-l-0">
       <div className="text-[34px] font-bold text-cmp-cream">
@@ -110,7 +125,7 @@ function Column({ b }: { b: BeitMidrash }) {
         <span className="text-[18px] font-medium text-cmp-cream/80">%</span>
       </div>
       <div className="mt-3 flex min-h-[245px] w-[76px] flex-1 flex-col justify-end overflow-hidden rounded-t-md bg-cmp-track">
-        <div key={flash} className={`cmp-bar-anim cmp-breathe flex flex-col ${flash ? "cmp-pop" : ""}`} style={{ height: `${Math.min(100, pct)}%`, animationDelay: `${(b.id.length + Number(b.id.replace(/\D/g, ""))) * -0.5}s` }}>
+        <div key={flash} className={`cmp-bar-anim cmp-bar-grow cmp-breathe flex flex-col ${noAnim ? "cmp-no-anim" : ""} ${flash ? "cmp-pop" : ""}`} style={{ height: `${grown ? Math.min(100, pct) : 0}%`, animationDelay: `${(b.id.length + Number(b.id.replace(/\D/g, ""))) * -0.5}s` }}>
           {order.map((g) => (
             <div
               key={g}
@@ -192,6 +207,11 @@ function JoinToasts({ toasts, names }: { toasts: Toast[]; names: Record<string, 
 export function CampaignScreen({ source }: { source: CampaignSource }) {
   const { scale, w, h } = useScale(1920, 1080);
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const [cycle, setCycle] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setCycle((c) => c + 1), 10_000);
+    return () => clearInterval(id);
+  }, []);
 
   const onJoin = useCallback((joiner: Joiner) => {
     setToasts((t) => [...t, { joiner, leaving: false }].slice(-3));
@@ -247,7 +267,7 @@ export function CampaignScreen({ source }: { source: CampaignSource }) {
                 ))}
               </div>
               <div className="flex flex-1 pt-4">
-                {state?.batei.map((b) => <Column key={b.id} b={b} />)}
+                {state?.batei.map((b) => <Column key={b.id} b={b} cycle={cycle} />)}
               </div>
             </div>
 
