@@ -92,7 +92,7 @@ function GroupCard({ group, accent }: { group: (typeof GROUPS)[number]; accent: 
   );
 }
 
-function Column({ b }: { b: BeitMidrash }) {
+function Column({ b, cycle }: { b: BeitMidrash; cycle: number }) {
   const joined = joinedOf(b);
   const pct = percentOf(b);
   const order: GroupId[] = ["eternal", "linked", "connected"]; // top → bottom
@@ -103,6 +103,14 @@ function Column({ b }: { b: BeitMidrash }) {
     prev.current = joined;
   }, [joined]);
 
+  // Every cycle: drop the bar to zero, then let it rise slowly back up.
+  const [grown, setGrown] = useState(false);
+  useEffect(() => {
+    setGrown(false);
+    const raf = requestAnimationFrame(() => requestAnimationFrame(() => setGrown(true)));
+    return () => cancelAnimationFrame(raf);
+  }, [cycle]);
+
   return (
     <div className="flex flex-1 flex-col items-center border-l border-cmp-line/60 last:border-l-0">
       <div className="text-[34px] font-bold text-cmp-cream">
@@ -110,7 +118,7 @@ function Column({ b }: { b: BeitMidrash }) {
         <span className="text-[18px] font-medium text-cmp-cream/80">%</span>
       </div>
       <div className="mt-3 flex min-h-[245px] w-[76px] flex-1 flex-col justify-end overflow-hidden rounded-t-md bg-cmp-track">
-        <div key={flash} className={`cmp-bar-anim cmp-breathe flex flex-col ${flash ? "cmp-pop" : ""}`} style={{ height: `${Math.min(100, pct)}%`, animationDelay: `${(b.id.length + Number(b.id.replace(/\D/g, ""))) * -0.5}s` }}>
+        <div key={flash} className={`cmp-bar-anim cmp-bar-grow cmp-breathe flex flex-col ${flash ? "cmp-pop" : ""}`} style={{ height: `${grown ? Math.min(100, pct) : 0}%`, animationDelay: `${(b.id.length + Number(b.id.replace(/\D/g, ""))) * -0.5}s` }}>
           {order.map((g) => (
             <div
               key={g}
